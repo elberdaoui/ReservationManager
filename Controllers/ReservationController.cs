@@ -22,7 +22,7 @@ namespace ReservationManager.Controllers
         public IActionResult Index()
         {
             var list = _res.Reservations.Include(s => s.Student).Include(rt => rt.ReservationType);
-            return View(list);
+            return View(list.ToList());
         }
 
         public IActionResult Create()
