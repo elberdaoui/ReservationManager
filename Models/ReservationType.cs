@@ -13,6 +13,10 @@ namespace ReservationManager.Models
         public string Id { get; set; }
         public string name { get; set; }
         public int accessNumber { get; set; }
-        
+
+        //[ForeignKey("Reservation")]
+        //public int ReservationId { get; set; }
+        //public virtual Reservation Reservation { get; set; }
+
     }
 }
