@@ -9,7 +9,8 @@ namespace ReservationManager.Models
 {
     public class ReservationType
     {
-        
+
+        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; }
         public string name { get; set; }
         public int accessNumber { get; set; }

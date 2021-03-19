@@ -1,20 +1,20 @@
 ﻿@model ReservationManager.Models.Reservation
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Edit";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var types = ViewBag.types;
-    //var userId = ViewBag.userId;
 }
 
-<h1>Create</h1>
+<h1>Edit</h1>
 
 <h4>Reservation</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="Date" class="control-label"></label>
                 <input asp-for="Date" type="date" class="form-control" />
@@ -25,20 +25,26 @@
                 <input asp-for="Status" value="Pending" class="form-control" />
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
-            @*<div class="form-group" >
-                <input asp-for="Student.Id" type="hidden" class="form-control" value="@userId" />
-            </div>*@
             <div class="form-group">
                 <label asp-for="Cause" class="control-label"></label>
                 <input asp-for="Cause" class="form-control" />
                 <span asp-validation-for="Cause" class="text-danger"></span>
             </div>
+            @*<div class="form-group">
+                <label asp-for="StudentId" class="control-label"></label>
+                <select asp-for="StudentId" class="form-control" asp-items="ViewBag.StudentId"></select>
+                <span asp-validation-for="StudentId" class="text-danger"></span>
+            </div>*@
+            @*<div class="form-group">
+                <label asp-for="ReservationTypeId" class="control-label"></label>
+                <select asp-for="ReservationTypeId" class="form-control" asp-items="ViewBag.ReservationType"></select>
+                <span asp-validation-for="ReservationTypeId" class="text-danger"></span>
+            </div>*@
             <div class="form-group">
-                <label asp-for="ReservationType.name" class="control-label"></label>
-                @*<input asp-for="ReservationType.name" class="form-control" />
-                <span asp-validation-for="ReservationType.name" class="text-danger"></span>*@
+                <label asp-for="ReservationTypeId" class="control-label"></label>
+                
 
-                <select asp-for="ReservationType.name" class="browser-default control-label custom-select">
+                <select asp-for="ReservationTypeId" class="browser-default control-label custom-select">
                   <option selected>Open this select menu</option>
                     @foreach(var reserType in types)
                     {
@@ -47,10 +53,10 @@
                     }
                     
                 </select>
-                <span asp-validation-for="ReservationType.name" class="text-danger"></span>
+                <span asp-validation-for="ReservationTypeId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>

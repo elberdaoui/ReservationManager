@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ReservationManager.Controllers
 {
-    [Authorize(Roles ="Admin")]
+    //[Authorize(Roles ="Admin")]
     public class AdminController : Controller
     {
         private readonly RoleManager<IdentityRole> roleManager;
@@ -76,7 +76,7 @@ namespace ReservationManager.Controllers
                 Id = role.Id,
                 RoleName = role.Name
             };
-            foreach(var user in userManager.Users)
+            foreach(var user in userManager.Users.ToList())
             {
                 if(await userManager.IsInRoleAsync(user, role.Name))
                 {
@@ -127,7 +127,7 @@ namespace ReservationManager.Controllers
 
             var userModel = new List<UserRole>();
 
-            foreach(var user in userManager.Users)
+            foreach(var user in userManager.Users.ToList())
             {
                 var userRole = new UserRole
                 {

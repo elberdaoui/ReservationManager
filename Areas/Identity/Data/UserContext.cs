@@ -17,8 +17,7 @@ namespace ReservationManager.Areas.Identity.Data
         }
 
         public DbSet<Student> Students { get; set; }
-        public DbSet<Reservation> Reservations { get; set; }
-        public DbSet<ReservationType> ReservationTypes { get; set; }
+        
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
