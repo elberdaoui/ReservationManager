@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using NToastNotify;
 using ReservationManager.Models;
 using System;
 using System.Collections.Generic;
@@ -26,9 +27,18 @@ namespace ReservationManager
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .AddRazorRuntimeCompilation()
+                .AddNToastNotifyNoty(new NToastNotify.NotyOptions()
+                {
+                    ProgressBar = true, //Showing progressbar
+                    //PositionClass = ToastPositions.TopRight,
+                    Timeout = 4000, //time the notification takes to disappear (ms)
+                    Theme = "mint" //theme name Notify.Js
+                });
             services.AddDbContext<ReservationContext>(options =>
                 options.UseMySql(Configuration.GetConnectionString("con")));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,6 +54,7 @@ namespace ReservationManager
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            app.UseNToastNotify();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 

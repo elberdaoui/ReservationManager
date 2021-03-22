@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ReservationManager.Controllers
 {
-    //[Authorize(Roles ="Admin")]
+    [Authorize(Roles ="Admin")]
     public class AdminController : Controller
     {
         private readonly RoleManager<IdentityRole> roleManager;

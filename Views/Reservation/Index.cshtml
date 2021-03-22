@@ -11,7 +11,14 @@
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    @if (User.Identity.IsAuthenticated)
+    {
+        if (User.IsInRole("Student"))
+        {
+            <a asp-action="Create">Create New</a>
+        }
+    }
+    
 </p>
 <table class="table">
     <thead>
@@ -64,16 +71,19 @@
                         if (User.IsInRole("Student"))
                         {
                             <a class="btn btn-warning" asp-action="Edit" asp-route-id="@item.Id">Edit</a> 
+                            <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a> 
                         }
                         else if(User.IsInRole("Admin"))
                         {
                             
-                            <a class="btn btn-primary" asp-action="Approved" asp-route-id="@item.Id">Confirm</a>
+                            <a class="btn btn-primary" asp-action="Confirm" asp-route-id="@item.Id">Confirm</a>
+                            <a class="btn btn-danger" asp-action="Decline" asp-route-id="@item.Id">Decline</a> 
                         }
                         else
                         {
                             <a hidden class="btn btn-warning" asp-action="Edit" asp-route-id="@item.Id">Edit</a> 
-                            <a hidden class="btn btn-primary" asp-action="Approved" asp-route-id="@item.Id">Confirm</a>
+                            <a hidden class="btn btn-primary" asp-action="Confirm" asp-route-id="@item.Id">Confirm</a>
+                            <a hidden class="btn btn-danger" asp-action="Decline" asp-route-id="@item.Id">Decline</a> 
                         }
                         
                    
@@ -87,7 +97,7 @@
                         }*@
                         
                     }
-                    | <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a> 
+                     @*<a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a> *@
             </td>
         </tr>
 }

@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NToastNotify;
 using ReservationManager.Models;
 using System;
 using System.Collections.Generic;
@@ -9,23 +11,29 @@ using System.Threading.Tasks;
 
 namespace ReservationManager.Controllers
 {
+    [Authorize]
     public class ReservationController : Controller
     {
         private readonly ReservationContext _res;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IToastNotification _toastNotification;
 
-        public ReservationController(ReservationContext res, UserManager<IdentityUser> userManager)
+        public ReservationController(ReservationContext res, UserManager<IdentityUser> userManager, IToastNotification toastNotification)
         {
             _res = res;
             _userManager = userManager;
+            _toastNotification = toastNotification;
         }
 
-        
+
         public IActionResult Idx()
         {
-            var list = _res.Reservations.Include(s => s.Student).Include(rt => rt.ReservationType);
+            
+            var list = _res.Reservations.Include(s => s.Student).Include(rt => rt.ReservationType)
+                .OrderBy(c => c.Student.resCount);
             ViewBag.role = new IdentityRole();
-            return View(list.ToList());
+            return View(list.ToList()
+                .Where(d => d.Date == DateTime.Today || d.Date.DayOfWeek == DayOfWeek.Saturday || d.Date.DayOfWeek == DayOfWeek.Sunday));
         }
         public async Task<IActionResult> Index()
         {
@@ -86,6 +94,7 @@ namespace ReservationManager.Controllers
                 _res.Add(reser);
 
                 await _res.SaveChangesAsync();
+                _toastNotification.AddSuccessToastMessage("You reserve your place successfully");
                 return RedirectToAction("index");
             }
             
@@ -124,6 +133,7 @@ namespace ReservationManager.Controllers
 
                 _res.Update(reservation);
                 await _res.SaveChangesAsync();
+                _toastNotification.AddSuccessToastMessage("You modified reserve successfully");
                 return RedirectToAction("index");
             }
 
@@ -152,36 +162,69 @@ namespace ReservationManager.Controllers
             var del =  _res.Reservations.Find(id);
             _res.Reservations.Remove(del);
              _res.SaveChanges();
+            _toastNotification.AddWarningToastMessage("You deleted your reservation");
             return RedirectToAction("Index");
         }
 
-        public async void Increment(int id)
+        public void Increment(int id)
         {
             var usr = _res.Reservations.Find(id);
             //var res = new Student();
             //var inc = usr.Student.resCount;
-            var incr = new Student().resCount;
+            //var incr = new Student().resCount;
             
-            var student = await _userManager.GetUserAsync(HttpContext.User);
-            var u = await _res.Students.FirstOrDefaultAsync(s => s.Id == usr.StudentId);
-            u.resCount = incr + 1;
+            //var student = await _userManager.GetUserAsync(HttpContext.User);
+            var u = _res.Students.FirstOrDefault(s => s.Id == usr.StudentId);
+            var inc = usr.Student.resCount;
+            u.resCount = inc + 1;
             //int inc = Convert.ToInt32(usr.Student.resCount.ToString());
             //res.resCount += inc;
             //usr.Student.resCount = incr + 1;
             _res.Update(usr);
             _res.Update(u);
-            await _res.SaveChangesAsync();
+             _res.SaveChanges();
         }
 
-        public IActionResult Approved(int id)
+        public async Task<IActionResult> Confirm(int id)
         {
             var resr = _res.Reservations.Find(id);
-            Increment(id);
-            //var app = new Reservation();
-            resr.Status = "Approved";
-            _res.Update(resr);
-            _res.SaveChanges();
+            if(resr.Status != "Approved")
+            {
+                Increment(id);
+                //var app = new Reservation();
+                resr.Status = "Approved";
+                _res.Update(resr);
+                await _res.SaveChangesAsync();
+                _toastNotification.AddSuccessToastMessage("Reservation approved");
+            }
+            else
+            {
+                _toastNotification.AddErrorToastMessage("Reservation already approved");
+            }
+            
             return RedirectToAction("index");
+        }
+
+        public IActionResult Decline(int id)
+        {
+            var resr = _res.Reservations.Find(id);
+
+            if (resr.Status != "Declined")
+            {
+                //var app = new Reservation();
+                resr.Status = "Declined";
+                _res.Update(resr);
+                _res.SaveChanges();
+                _toastNotification.AddWarningToastMessage("Reservation declined");
+                
+            }
+            else
+            {
+                _toastNotification.AddErrorToastMessage("Reservation already declined");
+            }
+
+            return RedirectToAction("index");
+
         }
     }
 }
