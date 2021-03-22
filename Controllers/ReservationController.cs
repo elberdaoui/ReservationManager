@@ -33,7 +33,7 @@ namespace ReservationManager.Controllers
                 .OrderBy(c => c.Student.resCount);
             ViewBag.role = new IdentityRole();
             return View(list.ToList()
-                .Where(d => d.Date == DateTime.Today || d.Date.DayOfWeek == DayOfWeek.Saturday || d.Date.DayOfWeek == DayOfWeek.Sunday));
+                .Where(d => d.Date >= DateTime.Today));
         }
         public async Task<IActionResult> Index()
         {

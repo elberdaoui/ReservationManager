@@ -24,9 +24,12 @@
             <div class="card-body">
                 <h5 class="card-title">@role.Name</h5>
             </div>
-            <div class="card-footer">
+            <div class="card-footer d-flex flex-row">
                 <a asp-action="EditRole" asp-controller="admin" asp-route-id="@role.Id" class="btn btn-primary">Edit</a>
-                <a href="#" class="btn btn-danger">Delete</a>
+                <form asp-action="Delete" asp-route-id="@role.Id" method="post" class="mx-2">
+                    @*<input type="hidden" asp-for="Id"/>*@
+                    <input type="submit" value="Delete" class="btn btn-danger" />
+                </form>
             </div>
         </div>
     }

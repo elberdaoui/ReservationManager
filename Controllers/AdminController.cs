@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using NToastNotify;
 //using ReservationManager.Areas.Identity.Data;
 using ReservationManager.Models;
 using System;
@@ -15,11 +16,13 @@ namespace ReservationManager.Controllers
     {
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly UserManager<IdentityUser> userManager;
+        private readonly IToastNotification _toastNotification;
 
-        public AdminController(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
+        public AdminController(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager, IToastNotification toastNotification)
         {
             this.roleManager = roleManager;
             this.userManager = userManager;
+            _toastNotification = toastNotification;
         }
 
         [HttpGet]
@@ -57,7 +60,7 @@ namespace ReservationManager.Controllers
                     ModelState.AddModelError("", error.Description);
                 }
             }
-
+            _toastNotification.AddWarningToastMessage("Role add successfully");
             return View(role);
         }
 
@@ -184,5 +187,47 @@ namespace ReservationManager.Controllers
             }
             return RedirectToAction("EditRole", new { id = roleId });
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(string id)
+        {
+
+            var del = await roleManager.FindByIdAsync(id);
+            if (del == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                var result = await roleManager.DeleteAsync(del);
+
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+                _toastNotification.AddWarningToastMessage("Role deleted successfully");
+                return RedirectToAction("Index");
+            }
+            //return View(del);
+        }
+
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public IActionResult Delete(int id)
+        //{
+
+        //    var del = _res.Reservations.Find(id);
+        //    _res.Reservations.Remove(del);
+        //    _res.SaveChanges();
+        //    _toastNotification.AddWarningToastMessage("You deleted your reservation");
+        //    return RedirectToAction("Index");
+        //}
     }
 }
