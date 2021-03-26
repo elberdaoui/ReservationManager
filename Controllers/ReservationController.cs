@@ -31,9 +31,16 @@ namespace ReservationManager.Controllers
             
             var list = _res.Reservations.Include(s => s.Student).Include(rt => rt.ReservationType)
                 .OrderBy(c => c.Student.resCount);
-            ViewBag.role = new IdentityRole();
+            //ViewBag.role = new IdentityRole();
             return View(list.ToList()
-                .Where(d => d.Date >= DateTime.Today));
+                .Where(d => d.Date >= DateTime.Today && d.Status == "Pending"));
+        }
+
+        public async Task<IActionResult> GetDataByUser()
+        {
+            var student = await _userManager.GetUserAsync(HttpContext.User);
+            var list = _res.Reservations.Include(s => s.Student).Include(rt => rt.ReservationType).Where(s => s.StudentId == student.Id);
+            return View("Index", list.ToList());
         }
         public async Task<IActionResult> Index()
         {
@@ -56,12 +63,6 @@ namespace ReservationManager.Controllers
             
         }
 
-        public async Task<IActionResult> GetDataByUser()
-        {
-            var student = await _userManager.GetUserAsync(HttpContext.User);
-            var list = _res.Reservations.Include(s => s.Student).Include(rt => rt.ReservationType).Where(s => s.StudentId == student.Id);
-            return View("Index", list.ToList());
-        }
 
         public IActionResult Create()
         {
