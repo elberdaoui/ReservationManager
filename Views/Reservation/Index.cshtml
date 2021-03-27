@@ -20,7 +20,7 @@
     }
     
 </p>
-<table class="table">
+@*<table class="table">
     <thead>
         <tr>
             <th>
@@ -86,20 +86,53 @@
                             <a hidden class="btn btn-danger" asp-action="Decline" asp-route-id="@item.Id">Decline</a> 
                         }
                         
-                   
-                        @*if (User.IsInRole("Admin"))
-                        {
-                            <a asp-action="Approved" asp-route-id="@item.Id">Confirm</a>
-                        }
-                        else
-                        {
-                            <a hidden asp-action="Approved" asp-route-id="@item.Id">Confirm</a>
-                        }*@
                         
                     }
-                     @*<a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a> *@
+                     
             </td>
         </tr>
 }
     </tbody>
-</table>
+</table>*@
+
+ <div class="card-columns">
+    @foreach (var item in Model)
+    {
+        <div class="card m-3">
+            <div class="card-header">
+                <h4 class="card-title">@item.Student.FirstName <span>@item.Student.LastName</span></h4>
+            </div>
+            <h5>Date:</h5> <p><span> @item.Date</span></p>
+            <h5>Cause:</h5><p class="card-text">@item.Cause</p>
+            <h5>Type:</h5><p>@item.ReservationType.name</p>
+            <h5>Status:</h5><p>@item.Status</p>
+            <div class="card-footer text-center">
+                @if(User.Identity.IsAuthenticated)
+                    {
+                        if (User.IsInRole("Student"))
+                        {
+                            <a class="btn btn-warning" asp-action="Edit" asp-route-id="@item.Id">Edit</a> 
+                            <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a> 
+                        }
+                        else if(User.IsInRole("Admin"))
+                        {
+                            
+                            <a class="btn btn-primary" asp-action="Confirm" asp-route-id="@item.Id">Confirm</a>
+                            <a class="btn btn-danger" asp-action="Decline" asp-route-id="@item.Id">Decline</a> 
+                        }
+                        else
+                        {
+                            <a hidden class="btn btn-warning" asp-action="Edit" asp-route-id="@item.Id">Edit</a> 
+                            <a hidden class="btn btn-primary" asp-action="Confirm" asp-route-id="@item.Id">Confirm</a>
+                            <a hidden class="btn btn-danger" asp-action="Decline" asp-route-id="@item.Id">Decline</a> 
+                        }
+                        
+                   
+                                                
+                    }
+            </div>
+        </div>
+    }
+</div>
+
+

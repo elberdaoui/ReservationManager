@@ -18,14 +18,25 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
+                        @*<li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+                        </li>*@
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Reservation" asp-action="Index">Reservation</a>
+                            @*<a class="nav-link text-dark" asp-area="" asp-controller="Reservation" asp-action="Index">Reservation</a>*@
+                            <div class="btn-group">
+                              <a class="nav-link text-dark" asp-area="" asp-controller="Reservation" asp-action="Index">Reservation</a>
+                              <button type="button" class="btn btn-sm dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                @*<span class="sr-only">Toggle Dropdown</span>*@
+                              </button>
+                              <div class="dropdown-menu">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Reservation" asp-action="ApprovedList">Approved</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Reservation" asp-action="DeclinedList">Declined</a>
+
+                              </div>
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -41,7 +52,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2021 - ReservationManager - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2021 - ReservationManager - YouCode @*<a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>*@
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

@@ -25,7 +25,9 @@ namespace ReservationManager.Controllers
             _toastNotification = toastNotification;
         }
 
+        #region Reservation list
 
+        #region Pending list
         public IActionResult Idx()
         {
             
@@ -62,8 +64,91 @@ namespace ReservationManager.Controllers
             return View();
             
         }
+        #endregion
 
+        #region Approved list
+        public IActionResult ApprovedListAdmin()
+        {
 
+            var list = _res.Reservations.Include(s => s.Student).Include(rt => rt.ReservationType)
+                .OrderBy(c => c.Date);
+            //ViewBag.role = new IdentityRole();
+            return View(list.ToList()
+                .Where(d => d.Status == "Approved"));
+        }
+
+        public async Task<IActionResult> ApprovedListUser()
+        {
+            var student = await _userManager.GetUserAsync(HttpContext.User);
+            var list = _res.Reservations.Include(s => s.Student).Include(rt => rt.ReservationType).Where(s => s.StudentId == student.Id);
+            return View("Index", list.ToList().OrderBy(d => d.Date));
+        }
+
+        public async Task<IActionResult> ApprovedList()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                if (User.IsInRole("Student"))
+                {
+                    await ApprovedListUser();
+                }
+                else if (User.IsInRole("Admin"))
+                {
+                    ApprovedListAdmin();
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            return View("Index");
+        }
+
+        #endregion
+
+        #region Declined list
+        public IActionResult DeclinedListAdmin()
+        {
+
+            var list = _res.Reservations.Include(s => s.Student).Include(rt => rt.ReservationType)
+                .OrderBy(c => c.Date);
+            //ViewBag.role = new IdentityRole();
+            return View(list.ToList()
+                .Where(d => d.Status == "Declined"));
+        }
+
+        public async Task<IActionResult> DeclinedListUser()
+        {
+            var student = await _userManager.GetUserAsync(HttpContext.User);
+            var list = _res.Reservations.Include(s => s.Student).Include(rt => rt.ReservationType).Where(s => s.StudentId == student.Id);
+            return View("Index", list.ToList().OrderBy(d => d.Date));
+        }
+
+        public async Task<IActionResult> DeclinedList()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                if (User.IsInRole("Student"))
+                {
+                    await DeclinedListUser();
+                }
+                else if (User.IsInRole("Admin"))
+                {
+                    DeclinedListAdmin();
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            return View("Index");
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Create Reservation
         public IActionResult Create()
         {
             //ViewBag.userId = _userManager.GetUserId(HttpContext.User);
@@ -101,7 +186,9 @@ namespace ReservationManager.Controllers
             
             return View(reservation);
         }
+        #endregion
 
+        #region Edit Reservation
         public IActionResult Edit(int? id)
         {
             if (id == null)
@@ -140,9 +227,10 @@ namespace ReservationManager.Controllers
 
             return View(reservation);
         }
+        #endregion
 
-
-        public  IActionResult Delete(int? id)
+        #region Delete Reservation
+        public IActionResult Delete(int? id)
         {
             var list = _res.Reservations.Include(s => s.Student).Include(rt => rt.ReservationType);
             ViewBag.data = list.AsEnumerable();
@@ -166,7 +254,9 @@ namespace ReservationManager.Controllers
             _toastNotification.AddWarningToastMessage("You deleted your reservation");
             return RedirectToAction("Index");
         }
+        #endregion
 
+        #region Confirm and Decline methods
         public void Increment(int id)
         {
             var usr = _res.Reservations.Find(id);
@@ -227,5 +317,6 @@ namespace ReservationManager.Controllers
             return RedirectToAction("index");
 
         }
+        #endregion
     }
 }
