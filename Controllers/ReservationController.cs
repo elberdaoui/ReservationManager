@@ -41,7 +41,7 @@ namespace ReservationManager.Controllers
         public async Task<IActionResult> GetDataByUser()
         {
             var student = await _userManager.GetUserAsync(HttpContext.User);
-            var list = _res.Reservations.Include(s => s.Student).Include(rt => rt.ReservationType).Where(s => s.StudentId == student.Id);
+            var list = _res.Reservations.Include(s => s.Student).Include(rt => rt.ReservationType).Where(s => s.StudentId == student.Id && s.Status == "Pending");
             return View("Index", list.ToList());
         }
         public async Task<IActionResult> Index()
@@ -80,7 +80,7 @@ namespace ReservationManager.Controllers
         public async Task<IActionResult> ApprovedListUser()
         {
             var student = await _userManager.GetUserAsync(HttpContext.User);
-            var list = _res.Reservations.Include(s => s.Student).Include(rt => rt.ReservationType).Where(s => s.StudentId == student.Id);
+            var list = _res.Reservations.Include(s => s.Student).Include(rt => rt.ReservationType).Where(s => s.StudentId == student.Id && s.Status == "Approved");
             return View("Index", list.ToList().OrderBy(d => d.Date));
         }
 
@@ -120,7 +120,7 @@ namespace ReservationManager.Controllers
         public async Task<IActionResult> DeclinedListUser()
         {
             var student = await _userManager.GetUserAsync(HttpContext.User);
-            var list = _res.Reservations.Include(s => s.Student).Include(rt => rt.ReservationType).Where(s => s.StudentId == student.Id);
+            var list = _res.Reservations.Include(s => s.Student).Include(rt => rt.ReservationType).Where(s => s.StudentId == student.Id && s.Status == "Declined");
             return View("Index", list.ToList().OrderBy(d => d.Date));
         }
 

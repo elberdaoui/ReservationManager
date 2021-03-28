@@ -8,7 +8,7 @@
     var role = new IdentityRole();
 }
 
-<h1>Index</h1>
+<h1>Reservations</h1>
 
 <p>
     @if (User.Identity.IsAuthenticated)
@@ -98,15 +98,17 @@
  <div class="card-columns">
     @foreach (var item in Model)
     {
-        <div class="card m-3">
-            <div class="card-header">
+        <div class="card m-3 border-primary">
+            <div class="card-header border-danger">
                 <h4 class="card-title">@item.Student.FirstName <span>@item.Student.LastName</span></h4>
             </div>
-            <h5>Date:</h5> <p><span> @item.Date</span></p>
+            <div class="card-body">
+            <h5>Date:</h5> <p>@item.Date</p>
             <h5>Cause:</h5><p class="card-text">@item.Cause</p>
             <h5>Type:</h5><p>@item.ReservationType.name</p>
             <h5>Status:</h5><p>@item.Status</p>
-            <div class="card-footer text-center">
+            </div>
+            <div class="card-footer text-center border-danger">
                 @if(User.Identity.IsAuthenticated)
                     {
                         if (User.IsInRole("Student"))

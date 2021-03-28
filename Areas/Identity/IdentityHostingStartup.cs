@@ -1,5 +1,7 @@
 ﻿using System;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
@@ -32,13 +34,24 @@ namespace ReservationManager.Areas.Identity
                 })
                     .AddEntityFrameworkStores<UserContext>()
                     .AddDefaultUI()
-                .AddDefaultTokenProviders();
+                    .AddDefaultTokenProviders();
                 services.ConfigureApplicationCookie(options =>
                 {
                     options.LoginPath = $"/Identity/Account/Login";
                     options.LogoutPath = $"/Identity/Account/Logout";
                     options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
                 });
+                services.AddAuthentication()
+                    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
+                    .AddGoogle(options =>
+                    {
+                        IConfigurationSection googleAuthNSection =
+                            context.Configuration.GetSection("Authentication:Google");
+
+                        options.ClientId = googleAuthNSection["ClientId"];
+                        options.ClientSecret = googleAuthNSection["ClientSecret"];
+                        //options.CallbackPath = new PathString("/google");
+                    });
             });
         }
     }

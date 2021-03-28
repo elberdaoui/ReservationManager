@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -27,6 +29,7 @@ namespace ReservationManager
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
+            services.AddMvc();
             services.AddControllersWithViews()
                 .AddRazorRuntimeCompilation()
                 .AddNToastNotifyNoty(new NToastNotify.NotyOptions()
@@ -38,7 +41,19 @@ namespace ReservationManager
                 });
             services.AddDbContext<ReservationContext>(options =>
                 options.UseMySql(Configuration.GetConnectionString("con")));
+            //services.AddAuthentication()
+            //        .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
+            //        .AddGoogle(options =>
+            //        {
+            //            IConfigurationSection googleAuthNSection =
+            //                Configuration.GetSection("Authentication:Google");
 
+            //            options.ClientId = googleAuthNSection["ClientId"];
+            //            options.ClientSecret = googleAuthNSection["ClientSecret"];
+            //            //options.ClientId = "184982332345-uaj3fvoplf0fifiaq93i8bertaih3f7v.apps.googleusercontent.com";
+            //            //options.ClientSecret = "JP0DR6ASrn4esyH7vHtxqJt8";
+            //        });
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -68,7 +83,7 @@ namespace ReservationManager
                 endpoints.MapRazorPages();
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Reservation}/{action=Index}/{id?}");
             });
         }
     }
